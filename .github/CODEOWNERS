@@ -1,0 +1,4 @@
+# Code owners for jdbc-armour
+# These users will be requested for review on all pull requests.
+
+* @cstopyak @buckley93
