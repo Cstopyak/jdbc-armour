@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!-- No tab characters -->
+  <module name="FileTabCharacter"/>
+
+  <!-- Trailing whitespace -->
+  <module name="RegexpSingleline">
+    <property name="format" value="\s+$"/>
+    <property name="message" value="Line has trailing whitespace."/>
+  </module>
+
+  <module name="TreeWalker">
+
+    <!-- ===== NAMING CONVENTIONS ===== -->
+
+    <!-- Classes and interfaces: UpperCamelCase -->
+    <module name="TypeName">
+      <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+      <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ANNOTATION_DEF"/>
+    </module>
+
+    <!-- Enums: UpperCamelCase -->
+    <module name="TypeName">
+      <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+      <property name="tokens" value="ENUM_DEF"/>
+    </module>
+
+    <!-- Enum constants: UPPER_SNAKE_CASE -->
+    <module name="ConstantName">
+      <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+      <property name="applyToPublic" value="true"/>
+      <property name="applyToProtected" value="true"/>
+      <property name="applyToPackage" value="true"/>
+      <property name="applyToPrivate" value="true"/>
+    </module>
+
+    <!-- Methods: lowerCamelCase -->
+    <module name="MethodName">
+      <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+    </module>
+
+    <!-- Parameters: lowerCamelCase -->
+    <module name="ParameterName">
+      <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+    </module>
+
+    <!-- Local variables: lowerCamelCase -->
+    <module name="LocalVariableName">
+      <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+    </module>
+
+    <!-- Instance fields: lowerCamelCase -->
+    <module name="MemberName">
+      <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+    </module>
+
+    <!-- Static non-final fields: lowerCamelCase -->
+    <module name="StaticVariableName">
+      <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+    </module>
+
+    <!-- Packages: all lowercase, dot-separated -->
+    <module name="PackageName">
+      <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+    </module>
+
+    <!-- Generic type parameters: single uppercase letter -->
+    <module name="ClassTypeParameterName">
+      <property name="format" value="^[A-Z]$"/>
+    </module>
+    <module name="MethodTypeParameterName">
+      <property name="format" value="^[A-Z]$"/>
+    </module>
+    <module name="InterfaceTypeParameterName">
+      <property name="format" value="^[A-Z]$"/>
+    </module>
+
+    <!-- ===== IMPORTS ===== -->
+
+    <!-- No wildcard imports -->
+    <module name="AvoidStarImport"/>
+
+    <!-- No duplicate imports -->
+    <module name="RedundantImport"/>
+
+    <!-- No unused imports -->
+    <module name="UnusedImports"/>
+
+    <!-- ===== CODE STRUCTURE ===== -->
+
+    <!-- One top-level class per file -->
+    <module name="OneTopLevelClass"/>
+
+    <!-- Braces required for all control structures -->
+    <module name="NeedBraces"/>
+
+    <!-- Left brace on same line -->
+    <module name="LeftCurly"/>
+
+    <!-- Right brace placement -->
+    <module name="RightCurly"/>
+
+    <!-- No empty blocks (catch, finally, etc.) without a comment -->
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- ===== MODIFIERS ===== -->
+
+    <!-- Modifier order: public protected private abstract static final ... -->
+    <module name="ModifierOrder"/>
+
+    <!-- Remove redundant modifiers (e.g. public on interface methods) -->
+    <module name="RedundantModifier"/>
+
+    <!-- ===== MISC ===== -->
+
+    <!-- No System.out / System.err — use a logger -->
+    <module name="Regexp">
+      <property name="format" value="System\.(out|err)\.print"/>
+      <property name="illegalPattern" value="true"/>
+      <property name="message" value="Use a logger instead of System.out/err."/>
+    </module>
+
+    <!-- Equals must override hashCode -->
+    <module name="EqualsHashCode"/>
+
+    <!-- Simplify boolean expressions -->
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+
+  </module>
+</module>
