@@ -54,6 +54,7 @@ public class OracleExceptionClassifier implements ExceptionClassifier {
         map.put(933,  FailureType.FATAL); // ORA-00933: SQL command not properly ended
         map.put(942,  FailureType.FATAL); // ORA-00942: table or view does not exist
         map.put(947,  FailureType.FATAL); // ORA-00947: not enough values
+        map.put(1017, FailureType.FATAL); // ORA-01017: invalid username/password; login denied
         map.put(1403, FailureType.FATAL); // ORA-01403: no data found
         map.put(1410, FailureType.FATAL); // ORA-01410: invalid ROWID
         map.put(1422, FailureType.FATAL); // ORA-01422: exact fetch returns more than requested rows
