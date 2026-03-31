@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Postgres implements ExceptionClassifier{
+public class PostgresExceptionClassifier implements ExceptionClassifier{
     private static final Map<String, FailureType> ERROR_CODE_MAP;
 
     static {
