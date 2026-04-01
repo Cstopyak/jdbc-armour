@@ -15,3 +15,6 @@ out/
 .factorypath
 .properties
 .vscode
+.jdbc-armour-playground
+jdbc-armour-playground-*.jar
+jdbc-armour-playground-*.war

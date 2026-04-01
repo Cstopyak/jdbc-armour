@@ -4,6 +4,7 @@ import com.jdbcarmour.classifier.FailureType;
 import java.time.Duration;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 public class RetryPolicy {
@@ -80,7 +81,7 @@ public class RetryPolicy {
     }
 
 
-    private boolean shouldRetry(FailureType failureType, int attempts) {
+    public boolean shouldRetry(FailureType failureType, int attempts) {
         if (attempts <= maxAttempts && retryOn.contains(failureType)) {
             log.info("Attempt {} failed with {}. Retrying...", attempts, failureType);
             return true;
@@ -109,7 +110,7 @@ public class RetryPolicy {
                 break;
         }
         if (jitter) {
-            delay += (long) (Math.random() * 100); // Add up to 100ms of jitter
+            delay += ThreadLocalRandom.current().nextLong(100); // Add up to 100ms of jitter
         }
         return Duration.ofMillis(Math.min(delay, maxDelay.toMillis()));
     }
