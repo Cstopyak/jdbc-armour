@@ -18,7 +18,6 @@ public class ResilientDataSource {
     private final ExceptionClassifier classifier;
     private final CircuitBreaker circuitBreaker;
     private final RetryEngine retryEngine;
-    private SQLException lastException;
 
     public ResilientDataSource(DataSource delegate, ExceptionClassifier classifier,
             CircuitBreaker circuitBreaker, RetryEngine retryEngine) {
@@ -29,7 +28,6 @@ public class ResilientDataSource {
     }
 
     public Connection acquireConnection() throws SQLException {
-        lastException = null;
         try {
             return retryEngine.executeWithRetry(() -> {
                 if (!circuitBreaker.allowRequest()) {
@@ -42,7 +40,6 @@ public class ResilientDataSource {
                     log.debug("Connection acquired, circuit={}", circuitBreaker.getState());
                     return connection;
                 } catch (SQLException e) {
-                    lastException = e;
                     FailureType type = classifier.classify(e);
                     log.warn("Connection attempt failed, classified as {}: {}", type, e.getMessage());
                     if (type == FailureType.TRANSIENT) {
@@ -71,7 +68,8 @@ public class ResilientDataSource {
                 cause = cause.getCause();
             }
             if (e.getMessage() != null && e.getMessage().contains("Retries exhausted")) {
-                throw new ConnectionExhaustedException("Failed to acquire connection after retries exhausted", lastException);
+                throw new ConnectionExhaustedException("Failed to acquire connection after retries exhausted",
+                        cause instanceof SQLException sqlEx ? sqlEx : null);
             }
             if (cause instanceof SQLException){
                 throw (SQLException) cause;

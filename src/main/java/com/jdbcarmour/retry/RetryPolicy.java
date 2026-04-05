@@ -80,13 +80,16 @@ public class RetryPolicy {
         return retryOn;
     }
 
-
     public boolean shouldRetry(FailureType failureType, int attempts) {
-        if (attempts <= maxAttempts && retryOn.contains(failureType)) {
+        if (!retryOn.contains(failureType)) {
+            return false;
+        }
+        if (attempts < maxAttempts) {
             log.info("Attempt {} failed with {}. Retrying...", attempts, failureType);
             return true;
         }
-        return retryOn.contains(failureType);
+        log.info("Attempt {} failed with {}. Retries exhausted.", attempts, failureType);
+        return false;
     }
 
     public Duration delayForAttempt(int attempt) {

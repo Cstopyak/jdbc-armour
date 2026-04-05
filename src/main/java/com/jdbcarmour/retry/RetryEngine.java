@@ -16,10 +16,13 @@ public class RetryEngine {
     }
 
     public <T> T executeWithRetry(Supplier<T> operation, Function<Exception, FailureType> classifier) {
+        Exception lastException = null;
         for (int attempt = 1; attempt <= retryPolicy.getMaxAttempts(); attempt++) {
+            log.info("retryPolicy in progress, attempt {}/{}", attempt, retryPolicy.getMaxAttempts());
             try {
                 return operation.get();
             } catch (Exception e) {
+                lastException = e;
                 FailureType type = classifier.apply(e);
                 if (retryPolicy.shouldRetry(type, attempt)) {
                     try {
@@ -32,7 +35,7 @@ public class RetryEngine {
                 }
             }
         }
-        throw new RuntimeException("Retries exhausted.");
+        throw new RuntimeException("Retries exhausted.", lastException);
 
     }
 }
