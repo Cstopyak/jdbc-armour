@@ -2,5 +2,8 @@ package com.jdbcarmour.retry;
 
 public enum BackoffStrategy {
     FIXED,
-    EXPONENTIAL
+    EXPONENTIAL,
+    LINEAR,
+    CUSTOM;
+
 }

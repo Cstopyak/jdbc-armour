@@ -1,5 +1,7 @@
 package com.jdbcarmour.core;
 
+import com.jdbcarmour.retry.RetryEngine;
+import com.jdbcarmour.retry.RetryPolicy;
 import com.jdbcarmour.circuitbreaker.CircuitBreaker;
 import com.jdbcarmour.classifier.ExceptionClassifier;
 import com.jdbcarmour.classifier.FailureType;
@@ -35,12 +37,15 @@ class ResilientDataSourceTest {
     @Mock
     private Connection connection;
 
+    private RetryEngine retryEngine;
+
     private AutoCloseable mocks;
 
     @BeforeEach
     void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
         when(circuitBreaker.allowRequest()).thenReturn(true);
+        retryEngine = new RetryEngine(new RetryPolicy.Builder().maxAttempts(3).build());
     }
 
     @AfterEach
@@ -50,11 +55,14 @@ class ResilientDataSourceTest {
 
     @Test
     void successOnFirstAttempt() throws SQLException {
+        // Arrange: Use a real RetryPolicy with default values
         when(dataSource.getConnection()).thenReturn(connection);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        // Act: Create the ResilientDataSource with the real RetryPolicy
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         Connection result = rds.acquireConnection();
 
+        // Assert: Only one attempt, success recorded, no failures
         assertSame(connection, result);
         verify(dataSource, times(1)).getConnection();
         verify(circuitBreaker, times(1)).recordSuccess();
@@ -70,7 +78,7 @@ class ResilientDataSourceTest {
             .thenThrow(sqlEx)
             .thenReturn(connection);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         Connection result = rds.acquireConnection();
 
         assertSame(connection, result);
@@ -85,7 +93,7 @@ class ResilientDataSourceTest {
         when(classifier.classify(sqlEx)).thenReturn(FailureType.TRANSIENT);
         when(dataSource.getConnection()).thenThrow(sqlEx);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         ConnectionExhaustedException ex = assertThrows(
             ConnectionExhaustedException.class,
             rds::acquireConnection
@@ -101,7 +109,7 @@ class ResilientDataSourceTest {
     void circuitOpenRejectsRequest() throws SQLException {
         when(circuitBreaker.allowRequest()).thenReturn(false);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         assertThrows(
             CircuitOpenException.class,
             rds::acquireConnection
@@ -118,7 +126,7 @@ class ResilientDataSourceTest {
         when(classifier.classify(sqlEx)).thenReturn(FailureType.FATAL);
         when(dataSource.getConnection()).thenThrow(sqlEx);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         SQLException thrown = assertThrows(
             SQLException.class,
             rds::acquireConnection
@@ -136,7 +144,7 @@ class ResilientDataSourceTest {
         when(classifier.classify(sqlEx)).thenReturn(FailureType.CONSTRAINT_VIOLATION);
         when(dataSource.getConnection()).thenThrow(sqlEx);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         SQLException thrown = assertThrows(
             SQLException.class,
             rds::acquireConnection
@@ -154,7 +162,7 @@ class ResilientDataSourceTest {
         when(classifier.classify(sqlEx)).thenReturn(FailureType.UNKNOWN);
         when(dataSource.getConnection()).thenThrow(sqlEx);
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 3, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         SQLException thrown = assertThrows(
             SQLException.class,
             rds::acquireConnection
@@ -171,15 +179,16 @@ class ResilientDataSourceTest {
         SQLException sqlEx = new SQLException("timeout", "08001");
         when(classifier.classify(sqlEx)).thenReturn(FailureType.TRANSIENT);
         when(dataSource.getConnection()).thenThrow(sqlEx);
+        retryEngine = new RetryEngine(new RetryPolicy.Builder().maxAttempts(1).build());
 
-        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, 1, 0);
+        ResilientDataSource rds = new ResilientDataSource(dataSource, classifier, circuitBreaker, retryEngine);
         assertThrows(
             ConnectionExhaustedException.class,
             rds::acquireConnection
         );
 
-        verify(dataSource, times(1)).getConnection();
-        verify(circuitBreaker, times(1)).recordFailure();
+        verify(dataSource).getConnection();
+        verify(circuitBreaker).recordFailure();
         verify(circuitBreaker, never()).recordSuccess();
     }
 }
