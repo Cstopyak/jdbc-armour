@@ -29,12 +29,12 @@ public class MySQLExceptionClassifier implements ExceptionClassifier {
         // ── TRANSIENT ─────────────────────────────────────────────────────────
         map.put(1040, FailureType.TRANSIENT); // MySQL: Too many connections
         map.put(1041, FailureType.TRANSIENT); // MySQL: Out of memory
-        map.put(1152, FailureType.TRANSIENT); // MySQL: Aborted connection
+        // map.put(1152, FailureType.TRANSIENT); // MySQL: Aborted connection (also fatal)
         map.put(1153, FailureType.TRANSIENT); // MySQL: Got a packet bigger than 'max_allowed_packet'
         map.put(1154, FailureType.TRANSIENT); // MySQL: Network read error from client
         map.put(1155, FailureType.TRANSIENT); // MySQL: Network write error to client
-        map.put(1156, FailureType.TRANSIENT); // MySQL: Network read error from server
-        map.put(1157, FailureType.TRANSIENT); // MySQL: Network write error to server
+        // map.put(1156, FailureType.TRANSIENT); // MySQL: Network read error from server (also fatal)
+        // map.put(1157, FailureType.TRANSIENT); // MySQL: Network write error to server (also fatal)
         map.put(1158, FailureType.TRANSIENT); // MySQL: Network read error from pipe
         map.put(1159, FailureType.TRANSIENT); // MySQL: Network error on write
         map.put(1160, FailureType.TRANSIENT); // MySQL: Network packets out of order
@@ -44,17 +44,17 @@ public class MySQLExceptionClassifier implements ExceptionClassifier {
         map.put(1164, FailureType.TRANSIENT); // MySQL: Network error on write
         map.put(1205, FailureType.TRANSIENT); // MySQL: Lock wait timeout exceeded
         map.put(1213, FailureType.TRANSIENT); // MySQL: Deadlock found when trying to get lock
-        map.put(1290, FailureType.TRANSIENT); // MySQL: The MySQL server is running with the --read-only option
-        map.put(1927, FailureType.TRANSIENT); // MySQL: Connection was killed
-        map.put(2002, FailureType.TRANSIENT); // MySQL: Can't connect to local MySQL server
-        map.put(2003, FailureType.TRANSIENT); // MySQL: Can't connect to MySQL server on host
-        map.put(2006, FailureType.TRANSIENT); // MySQL: MySQL server has gone away
-        map.put(2011, FailureType.TRANSIENT); // MySQL: Out of memory
-        map.put(2013, FailureType.TRANSIENT); // MySQL: Lost connection to MySQL server during query
-        map.put(2026, FailureType.TRANSIENT); // MySQL: Can't create TCP/IP socket
-        map.put(2055, FailureType.TRANSIENT); // MySQL: Lost connection to Mysql server at 'reading authorization packet'
-        map.put(3087, FailureType.TRANSIENT); // MySQL: Query execution was interrupted
-        map.put(4031, FailureType.TRANSIENT); // MySQL: Resource group was busy (may be transient in resource-constrained environments)
+        // map.put(1290, FailureType.TRANSIENT); // MySQL: The MySQL server is running with the --read-only option (also fatal)
+        // map.put(1927, FailureType.TRANSIENT); // MySQL: Connection was killed (also fatal)
+        // map.put(2002, FailureType.TRANSIENT); // MySQL: Can't connect to local MySQL server (also fatal)
+        // map.put(2003, FailureType.TRANSIENT); // MySQL: Can't connect to MySQL server on host (also fatal)
+        // map.put(2006, FailureType.TRANSIENT); // MySQL: MySQL server has gone away (also fatal)
+        // map.put(2011, FailureType.TRANSIENT); // MySQL: Out of memory (also fatal)
+        // map.put(2013, FailureType.TRANSIENT); // MySQL: Lost connection to MySQL server during query (also fatal)
+        // map.put(2026, FailureType.TRANSIENT); // MySQL: Can't create TCP/IP socket (also fatal)
+        // map.put(2055, FailureType.TRANSIENT); // MySQL: Lost connection to Mysql server at 'reading authorization packet' (also fatal)
+        // map.put(3087, FailureType.TRANSIENT); // MySQL: Query execution was interrupted (also fatal)
+        // map.put(4031, FailureType.TRANSIENT); // MySQL: Resource group was busy (may be transient in resource-constrained environments) (also fatal)
 
         // ── FATAL ─────────────────────────────────────────────────────────────
         map.put(1042, FailureType.FATAL); // MySQL: Can't get hostname for your address
