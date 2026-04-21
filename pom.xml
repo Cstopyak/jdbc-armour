@@ -34,8 +34,8 @@
 
 <scm>
   <url>https://github.com/Cstopyak/jdbc-armour</url>
-  <connection>scm:git:git://github.com/Cstopyak/jdbc-armour.git</connection>
-  <developerConnection>scm:git:ssh://github.com:Cstopyak/jdbc-armour.git</developerConnection>
+  <connection>scm:git:https://github.com/Cstopyak/jdbc-armour.git</connection>
+  <developerConnection>scm:git:ssh://git@github.com/Cstopyak/jdbc-armour.git</developerConnection>
   <tag>HEAD</tag>
 </scm>
 
